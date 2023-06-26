@@ -1,20 +1,9 @@
 import 'package:flutter/material.dart';
 
 void main() {
-  runApp(QuestionarioApp());
-}
-
-class QuestionarioApp extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    return MaterialApp(
-      title: 'Questionário',
-      theme: ThemeData(
-        primarySwatch: Colors.blue,
-      ),
-      home: Questionario(),
-    );
-  }
+  runApp(MaterialApp(
+    home: Questionario(),
+  ));
 }
 
 class Questionario extends StatefulWidget {
@@ -23,41 +12,31 @@ class Questionario extends StatefulWidget {
 }
 
 class _QuestionarioState extends State<Questionario> {
-  List<String> respostas = [];
-  int perguntaAtual = 0;
-
-  List<Map<String, dynamic>> perguntas = [
+  List<Map<String, dynamic>> questoesRespostas = [
     {
       'pergunta': 'Qual é a capital do Brasil?',
-      'respostas': ['São Paulo', 'Rio de Janeiro', 'Brasília', 'Salvador'],
-      'respostaCorreta': 'Brasília',
+      'resposta': 'Brasília',
     },
     {
       'pergunta': 'Quem descobriu o Brasil?',
-      'respostas': ['Pedro Álvares Cabral', 'Cristóvão Colombo', 'Américo Vespúcio', 'Fernão de Magalhães'],
-      'respostaCorreta': 'Pedro Álvares Cabral',
+      'resposta': 'Pedro Álvares Cabral',
     },
-    {
-      'pergunta': 'Qual é a cor do céu?',
-      'respostas': ['Vermelho', 'Azul', 'Verde', 'Amarelo'],
-      'respostaCorreta': 'Azul',
-    },
+    // Adicione mais questões e respostas conforme necessário
   ];
+
+  int indiceQuestao = 0;
 
   void responder(String resposta) {
     setState(() {
-      respostas.add(resposta);
-      perguntaAtual++;
+      // Você pode adicionar lógica adicional aqui, como verificar se a resposta está correta
+      if (indiceQuestao < questoesRespostas.length - 1) {
+        indiceQuestao++;
+      } else {
+        // Todas as questões foram respondidas
+        // Você pode adicionar ações adicionais aqui, como exibir uma mensagem de conclusão
+        print('Questionário concluído!');
+      }
     });
-
-    if (perguntaAtual >= perguntas.length) {
-      Navigator.push(
-        context,
-        MaterialPageRoute(
-          builder: (context) => Resultado(respostas),
-        ),
-      );
-    }
   }
 
   @override
@@ -66,51 +45,52 @@ class _QuestionarioState extends State<Questionario> {
       appBar: AppBar(
         title: Text('Questionário'),
       ),
-      body: perguntaAtual < perguntas.length
-          ? Column(
-              children: [
-                Text(
-                  perguntas[perguntaAtual]['pergunta'] as String,
-                  style: TextStyle(fontSize: 18),
-                ),
-                SizedBox(height: 16),
-                ...((perguntas[perguntaAtual]['respostas'] as List<dynamic>).map((resposta) {
-                  return ElevatedButton(
-                    onPressed: () => responder(resposta as String),
-                    child: Text(resposta as String),
-                  );
-                }).toList()),
-              ],
-            )
-          : Center(
-              child: Text(
-                'Questionário terminado!',
-                style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
-              ),
-            ),
+      body: Column(
+        children: [
+          Questao(questoesRespostas[indiceQuestao]['pergunta']),
+          Resposta(responder),
+        ],
+      ),
     );
   }
 }
 
-class Resultado extends StatelessWidget {
-  final List<String> respostas;
+class Questao extends StatelessWidget {
+  final String pergunta;
 
-  Resultado(this.respostas);
+  Questao(this.pergunta);
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: Text('Resultado do Questionário'),
-      ),
-      body: ListView.builder(
-        itemCount: respostas.length,
-        itemBuilder: (BuildContext context, int index) {
-          return ListTile(
-            title: Text('Resposta ${index + 1}: ${respostas[index]}'),
-          );
-        },
-      ),
+    return Text(
+      pergunta,
+      style: TextStyle(fontSize: 16),
+    );
+  }
+}
+
+class Resposta extends StatelessWidget {
+  final Function(String) aoResponder;
+
+  Resposta(this.aoResponder);
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      children: [
+        ElevatedButton(
+          onPressed: () => aoResponder('Resposta 1'),
+          child: Text('Resposta 1'),
+        ),
+        ElevatedButton(
+          onPressed: () => aoResponder('Resposta 2'),
+          child: Text('Resposta 2'),
+        ),
+        ElevatedButton(
+          onPressed: () => aoResponder('Resposta 3'),
+          child: Text('Resposta 3'),
+        ),
+      ],
     );
   }
 }
