@@ -1,97 +1,97 @@
 import 'package:flutter/material.dart';
+import 'dart:math';
 
 void main() {
   runApp(MaterialApp(
-    home: Questionario(),
+    home: Scaffold(
+      appBar: AppBar(
+        title: Text('Fichas de Alunos'),
+      ),
+      body: SingleChildScrollView(
+        child: Center(
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Ficha(
+                imagem: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQXy_4kYb0HI81rZDmvQurs973x8KaqZGF_A8_yvN7_aJ6Ub0CgpOppbIAiMycurDIBOdE&usqp=CAU',
+                nome: 'João Silva',
+                matricula: generateRandomNumber(),
+                escola: 'Henrique Galvão',
+                anoPeriodo: '2023/1',
+              ),
+              SizedBox(height: 20),
+              Ficha(
+                imagem: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQtrQQNBKND587Lcbf3P3YtBI2a3ksT_w5Mig&usqp=CAU',
+                nome: 'Maria Santos',
+                matricula: generateRandomNumber(),
+                escola: 'CEFET-MG',
+                anoPeriodo: '2023/1',
+              ),
+              SizedBox(height: 20),
+              Ficha(
+                imagem: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQY01fYb18Wg1pj4FgDMtEDSDPtrvWXL0aoGh35yBNyT7aN1tgd1WLtt_0Kb45TxmNVE8s&usqp=CAU',
+                nome: 'Pedro Oliveira',
+                matricula: generateRandomNumber(),
+                escola: 'Martin Cyprien',
+                anoPeriodo: '2023/2',
+              ),
+            ],
+          ),
+        ),
+      ),
+    ),
   ));
 }
 
-class Questionario extends StatefulWidget {
-  @override
-  _QuestionarioState createState() => _QuestionarioState();
-}
+class Ficha extends StatelessWidget {
+  final String imagem;
+  final String nome;
+  final int matricula;
+  final String escola;
+  final String anoPeriodo;
 
-class _QuestionarioState extends State<Questionario> {
-  List<Map<String, dynamic>> questoesRespostas = [
-    {
-      'pergunta': 'Qual é a capital do Brasil?',
-      'resposta': 'Brasília',
-    },
-    {
-      'pergunta': 'Quem descobriu o Brasil?',
-      'resposta': 'Pedro Álvares Cabral',
-    },
-    // Adicione mais questões e respostas conforme necessário
-  ];
-
-  int indiceQuestao = 0;
-
-  void responder(String resposta) {
-    setState(() {
-      // Você pode adicionar lógica adicional aqui, como verificar se a resposta está correta
-      if (indiceQuestao < questoesRespostas.length - 1) {
-        indiceQuestao++;
-      } else {
-        // Todas as questões foram respondidas
-        // Você pode adicionar ações adicionais aqui, como exibir uma mensagem de conclusão
-        print('Questionário concluído!');
-      }
-    });
-  }
+  const Ficha({
+    required this.imagem,
+    required this.nome,
+    required this.matricula,
+    required this.escola,
+    required this.anoPeriodo,
+  });
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: Text('Questionário'),
+    return Card(
+      child: Padding(
+        padding: EdgeInsets.all(16),
+        child: Column(
+          children: [
+            Container(
+              height: 150,
+              width: 150,
+              child: Image.network(
+                imagem,
+                fit: BoxFit.cover,
+              ),
+            ),
+            SizedBox(height: 10),
+            Text(
+              'Nome: $nome',
+              style: TextStyle(fontWeight: FontWeight.bold),
+            ),
+            SizedBox(height: 5),
+            Text('Matrícula: $matricula'),
+            SizedBox(height: 5),
+            Text('Escola: $escola'),
+            SizedBox(height: 5),
+            Text('Ano/Período: $anoPeriodo'),
+          ],
+        ),
       ),
-      body: Column(
-        children: [
-          Questao(questoesRespostas[indiceQuestao]['pergunta']),
-          Resposta(responder),
-        ],
-      ),
     );
   }
 }
 
-class Questao extends StatelessWidget {
-  final String pergunta;
-
-  Questao(this.pergunta);
-
-  @override
-  Widget build(BuildContext context) {
-    return Text(
-      pergunta,
-      style: TextStyle(fontSize: 16),
-    );
-  }
+int generateRandomNumber() {
+  Random random = Random();
+  return random.nextInt(100000);
 }
-
-class Resposta extends StatelessWidget {
-  final Function(String) aoResponder;
-
-  Resposta(this.aoResponder);
-
-  @override
-  Widget build(BuildContext context) {
-    return Column(
-      children: [
-        ElevatedButton(
-          onPressed: () => aoResponder('Resposta 1'),
-          child: Text('Resposta 1'),
-        ),
-        ElevatedButton(
-          onPressed: () => aoResponder('Resposta 2'),
-          child: Text('Resposta 2'),
-        ),
-        ElevatedButton(
-          onPressed: () => aoResponder('Resposta 3'),
-          child: Text('Resposta 3'),
-        ),
-      ],
-    );
-  }
-}
-
